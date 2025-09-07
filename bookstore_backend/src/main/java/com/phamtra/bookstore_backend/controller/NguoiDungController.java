@@ -3,7 +3,6 @@ package com.phamtra.bookstore_backend.controller;
 import com.phamtra.bookstore_backend.entity.NguoiDung;
 import com.phamtra.bookstore_backend.exception.IdInvalidException;
 import com.phamtra.bookstore_backend.service.NguoiDungService;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
