@@ -1,7 +1,9 @@
 package com.phamtra.bookstore_backend.controller;
 
 import com.phamtra.bookstore_backend.entity.NguoiDung;
+import com.phamtra.bookstore_backend.exception.IdInvalidException;
 import com.phamtra.bookstore_backend.service.NguoiDungService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,7 +26,10 @@ public class NguoiDungController {
     }
 
     @DeleteMapping("/users/{id}")
-    public ResponseEntity<?> xoaNguoiDung(@PathVariable("id") long id) {
+    public ResponseEntity<?> xoaNguoiDung(@PathVariable("id") long id) throws IdInvalidException {
+        if (id > 1500) {
+            throw new IdInvalidException("Id ko lon hon 1500");
+        }
         this.nguoiDungService.xoaNguoiDung(id);
         return ResponseEntity.ok().body("success");
     }
@@ -42,8 +47,8 @@ public class NguoiDungController {
     }
 
     @PutMapping("/users")
-    public NguoiDung capNhatNguoiDung(@RequestBody NguoiDung nguoiDung) {
+    public ResponseEntity<?> capNhatNguoiDung(@RequestBody NguoiDung nguoiDung) {
         NguoiDung nguoiDungMoi = this.nguoiDungService.capNhatNguoiDung(nguoiDung);
-        return nguoiDungMoi;
+        return ResponseEntity.ok().body(nguoiDungMoi);
     }
 }
