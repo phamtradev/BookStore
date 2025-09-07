@@ -1,4 +1,4 @@
-package com.phamtra.bookstore_backend.respone;
+package com.phamtra.bookstore_backend.dto.respone;
 
 public class RestRespone<T> {
 

@@ -1,6 +1,6 @@
 package com.phamtra.bookstore_backend.exception;
 
-import com.phamtra.bookstore_backend.respone.RestRespone;
+import com.phamtra.bookstore_backend.dto.respone.RestRespone;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;

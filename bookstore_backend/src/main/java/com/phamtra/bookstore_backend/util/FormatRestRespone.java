@@ -1,6 +1,6 @@
 package com.phamtra.bookstore_backend.util;
 
-import com.phamtra.bookstore_backend.respone.RestRespone;
+import com.phamtra.bookstore_backend.dto.respone.RestRespone;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.core.MethodParameter;
 import org.springframework.http.MediaType;
