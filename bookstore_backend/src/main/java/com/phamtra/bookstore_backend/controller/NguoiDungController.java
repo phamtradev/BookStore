@@ -2,6 +2,7 @@ package com.phamtra.bookstore_backend.controller;
 
 import com.phamtra.bookstore_backend.entity.NguoiDung;
 import com.phamtra.bookstore_backend.service.NguoiDungService;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -17,25 +18,27 @@ public class NguoiDungController {
     }
 
     @PostMapping("/users")
-    public NguoiDung taoNguoiDung (@RequestBody NguoiDung nguoiDung) {
+    public ResponseEntity<?> taoNguoiDung (@RequestBody NguoiDung nguoiDung) {
         NguoiDung nguoiDungMoi = this.nguoiDungService.taoNguoiDung(nguoiDung);
-        return nguoiDungMoi;
+        return ResponseEntity.ok().body(nguoiDungMoi);
     }
 
     @DeleteMapping("/users/{id}")
-    public String xoaNguoiDung(@PathVariable("id") long id) {
+    public ResponseEntity<?> xoaNguoiDung(@PathVariable("id") long id) {
         this.nguoiDungService.xoaNguoiDung(id);
-        return "ok";
+        return ResponseEntity.ok().body("success");
     }
 
     @GetMapping("/users/{id}")
-    public NguoiDung getNguoiDungById(@PathVariable("id") long id) {
-        return this.nguoiDungService.getNguoiDungById(id);
+    public ResponseEntity<?> getNguoiDungById(@PathVariable("id") long id) {
+        NguoiDung nguoiDung = this.nguoiDungService.getNguoiDungById(id);
+        return ResponseEntity.ok().body(nguoiDung);
     }
 
     @GetMapping("/users")
-    public List<NguoiDung> getAllNguoiDung() {
-        return this.nguoiDungService.getAllNguoiDung();
+    public ResponseEntity<?> getAllNguoiDung() {
+        List<NguoiDung> danhSachNguoiDung = this.nguoiDungService.getAllNguoiDung();
+        return ResponseEntity.ok().body(danhSachNguoiDung);
     }
 
     @PutMapping("/users")
