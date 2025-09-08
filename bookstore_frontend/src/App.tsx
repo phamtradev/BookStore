@@ -1,9 +1,11 @@
-import { Navbar } from './layouts/header-footer/Navbar'
+import { Footer } from './layouts/Footer'
+import { Navbar } from './layouts/Navbar'
 
 function App() {
   return (
     <>
       <Navbar />
+      <Footer />
     </>
   )
 }
