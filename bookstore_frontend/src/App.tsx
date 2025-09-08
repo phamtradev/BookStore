@@ -1,9 +1,9 @@
-import './App.css'
+import { Navbar } from './layouts/header-footer/Navbar'
+
 function App() {
   return (
     <>
-      <h1>Bookstore</h1>
-      <button className='btn btn-primary'>KAKAKA</button>
+      <Navbar />
     </>
   )
 }
