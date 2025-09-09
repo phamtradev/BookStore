@@ -1,8 +1,12 @@
 package com.phamtra.bookstore_backend.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.phamtra.bookstore_backend.util.constant.GioiTinh;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.util.List;
 
@@ -47,21 +51,23 @@ public class NguoiDung {
     private String diaChiGiaoHang;
 
     @OneToMany(mappedBy = "nguoiDung", fetch = FetchType.LAZY)
+    @JsonIgnore
     private List<SuDanhGia> danhSachSuDanhGia;
 
     @OneToMany(mappedBy = "nguoiDung", fetch = FetchType.LAZY)
+    @JsonIgnore
     private List<SachYeuThich> danhSachSachYeuThich;
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "nguoidung_quyen",
             joinColumns = @JoinColumn(name = "ma_nguoi_dung"),
             inverseJoinColumns = @JoinColumn(name = "ma_quyen"))
+    @JsonIgnore
     private List<Quyen> danhSachQuyen;
 
     @OneToMany(mappedBy = "nguoiDung", fetch = FetchType.LAZY)
+    @JsonIgnore
     private List<DonHang> danhSachDonHang;
-
-
 
 
 }

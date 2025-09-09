@@ -1,7 +1,11 @@
 package com.phamtra.bookstore_backend.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.util.List;
 
@@ -46,21 +50,24 @@ public class Sach {
     @JoinTable(name = "sach_theloai",
             joinColumns = @JoinColumn(name = "ma_sach"),
             inverseJoinColumns = @JoinColumn(name = "ma_the_loai"))
+    @JsonIgnore
     List<TheLoai> danhSachTheLoai;
 
     @OneToMany(mappedBy = "sach", fetch = FetchType.LAZY)
+    @JsonIgnore
     List<HinhAnh> danhSachHinhAnh;
 
     @OneToMany(mappedBy = "sach", fetch = FetchType.LAZY)
+    @JsonIgnore
     List<SuDanhGia> danhSachSuDanhGia;
 
     @OneToMany(mappedBy = "sach", fetch = FetchType.LAZY)
+    @JsonIgnore
     List<ChiTietDonHang> danhSachChiTietDonHang;
 
     @OneToMany(mappedBy = "sach", fetch = FetchType.LAZY)
+    @JsonIgnore
     List<SachYeuThich> danhSachSachYeuThich;
-
-
 
 
 }
