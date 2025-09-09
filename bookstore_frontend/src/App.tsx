@@ -1,6 +1,6 @@
-import { Footer } from './layouts/Footer'
+import { Footer } from './layouts/footer/Footer'
 import { HomePage } from './layouts/homepage/HomePage'
-import { Navbar } from './layouts/Navbar'
+import { Navbar } from './layouts/header/Navbar'
 
 function App() {
   return (
