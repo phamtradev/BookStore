@@ -2,13 +2,11 @@ package com.phamtra.bookstore_backend.controller;
 
 import com.phamtra.bookstore_backend.entity.Sach;
 import com.phamtra.bookstore_backend.service.SachService;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -22,9 +20,15 @@ public class SachController {
     }
 
     @GetMapping("/sachs")
-    public ResponseEntity<?> getAllSach() {
-        List<Sach> danhSachSach = this.sachService.getAllSach();
-        return ResponseEntity.ok().body(danhSachSach);
+    public ResponseEntity<?> getAllSach(
+            @RequestParam("current") Optional<String> currentOptional,
+            @RequestParam("pageSize") Optional<String> pagesizeOptional) {
+        String sCurrent = currentOptional.isPresent() ? currentOptional.get() : "";
+        String sPageSize = pagesizeOptional.isPresent() ? pagesizeOptional.get() : "";
+        int current = Integer.parseInt(sCurrent) - 1;
+        int pageSize = Integer.parseInt(sPageSize);
+        Pageable pageable = PageRequest.of(current, pageSize);
+        return ResponseEntity.ok().body(this.sachService.getAllSach(pageable));
     }
 
     @GetMapping("/sachs/{id}")
