@@ -1,28 +1,28 @@
 import React from 'react'
-import type { Book } from '../../../models/Book'
+import type BookModel from '../../../models/BookModel'
 
 interface BookProps {
-  book: Book;
+  book: BookModel;
 }
 
-export const BookProps: React.FC<BookProps> = ({ book }) => {
+export const BookProps: React.FC<BookProps> = (props) => {
   return (
     <div className='card'>
       <img
-        src={book.imageUrl}
+        src={""}
         className='card-img-top'
-        alt={book.title}
+        alt={props.book.tenSach}
         style={{ height: '200px' }}
       />
       <div className='card-body'>
-        <h5 className='card-title'>{book.title}</h5>
-        <p className='card-text'>{book.description}</p>
+        <h5 className='card-title'>{props.book.tenSach}</h5>
+        <p className='card-text'>{props.book.moTa}</p>
         <div className='price'>
           <span className='original-price'>
-            <del>{book.originalPrice}</del>
+            <del>{props.book.giaNiemYet}</del>
           </span>
           <span className='discounted-price'>
-            <strong>{book.price}</strong>
+            <strong>{props.book.giaBan}</strong>
           </span>
         </div>
         <div className='row mt-2' role='group'>

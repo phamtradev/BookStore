@@ -1,88 +1,50 @@
-import React from 'react'
-import type { Book } from '../../models/Book'
-import { BookProps } from './components/BookProps'
-
+import React, { useEffect, useState } from 'react'
+import type BookModel from '../../models/BookModel';
+import { BookProps } from './components/BookProps';
+import { getAllBook } from '../../api/BookAPI';
 export const ListBook: React.FC = () => {
-  const books: Book[] = [
-    {
-      id: 1,
-      title: 'Book 1',
-      description: "abcdefc",
-      originalPrice: 50000,
-      price: 20000,
-      imageUrl: '/books/Sach1.webp',
-    },
-    {
-      id: 2,
-      title: 'Book 2',
-      description: "abcdefcdasdsda",
-      originalPrice: 100000,
-      price: 10000,
-      imageUrl: '/books/Sach2.webp',
-    },
-    {
-      id: 3,
-      title: 'Book 3',
-      description: "sadasabcdefcdasdsda",
-      originalPrice: 200000,
-      price: 100000,
-      imageUrl: '/books/Sach3.webp',
-    },
-    {
-      id: 1,
-      title: 'Book 1',
-      description: "abcdefc",
-      originalPrice: 50000,
-      price: 20000,
-      imageUrl: '/books/Sach1.webp',
-    },
-    {
-      id: 2,
-      title: 'Book 2',
-      description: "abcdefcdasdsda",
-      originalPrice: 100000,
-      price: 10000,
-      imageUrl: '/books/Sach2.webp',
-    },
-    {
-      id: 3,
-      title: 'Book 3',
-      description: "sadasabcdefcdasdsda",
-      originalPrice: 200000,
-      price: 100000,
-      imageUrl: '/books/Sach3.webp',
-    },
-    {
-      id: 1,
-      title: 'Book 1',
-      description: "abcdefc",
-      originalPrice: 50000,
-      price: 20000,
-      imageUrl: '/books/Sach1.webp',
-    },
-    {
-      id: 2,
-      title: 'Book 2',
-      description: "abcdefcdasdsda",
-      originalPrice: 100000,
-      price: 10000,
-      imageUrl: '/books/Sach2.webp',
-    },
-    {
-      id: 3,
-      title: 'Book 3',
-      description: "sadasabcdefcdasdsda",
-      originalPrice: 200000,
-      price: 100000,
-      imageUrl: '/books/Sach3.webp',
-    },
-  ]
+
+  const [ListBook, setListBook] = useState<BookModel[]>([]);
+  const [loadingData, setLoadingData] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    getAllBook().then(
+      bookData => {
+        setListBook(bookData);
+        setLoadingData(false);
+      }
+    ).catch(
+
+    );
+  }, [])
+
+  if (loadingData) {
+    return (
+      <div className="d-flex justify-content-center align-items-center" style={{ height: '200px' }}>
+        <div className="spinner-border text-primary" role="status">
+          <span className="visually-hidden">Loading...</span>
+        </div>
+      </div>
+    )
+  }
+
+  if (error) {
+    return (
+      <div>
+        <h1>Error: {error}</h1>
+      </div>
+    )
+  }
+
   return (
+
+
     <div className="container">
       <div className="row mt-4">
-        {books.map((book, index) => (
+        {ListBook.map((book, index) => (
           <div className="col-3 mb-4" key={index}>
-            <BookProps book={book} />
+            <BookProps key={book.maSach} book={book} />
           </div>
         ))}
       </div>
