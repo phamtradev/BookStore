@@ -1,3 +1,4 @@
+import PhotoModel from './PhotoModel';
 class BookModel {
   maSach: number;
   tenSach?: string;
@@ -7,6 +8,7 @@ class BookModel {
   soLuong?: number;
   tenTacGia?: string;
   trungBinhXepHang?: number;
+  hinhAnhs?: PhotoModel[];
 
   constructor(
     maSach: number,
@@ -17,6 +19,7 @@ class BookModel {
     soLuong?: number,
     tenTacGia?: string,
     trungBinhXepHang?: number,
+    hinhAnhs?: PhotoModel[],
   ) {
     this.maSach = maSach;
     this.tenSach = tenSach;
@@ -26,6 +29,7 @@ class BookModel {
     this.soLuong = soLuong;
     this.tenTacGia = tenTacGia;
     this.trungBinhXepHang = trungBinhXepHang;
+    this.hinhAnhs = hinhAnhs;
   }
 }
 

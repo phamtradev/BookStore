@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import type BookModel from '../../models/BookModel';
 import { BookProps } from './components/BookProps';
 import { getAllBook } from '../../api/BookAPI';
+import my_request from '../../api/Request';
 export const ListBook: React.FC = () => {
 
   const [ListBook, setListBook] = useState<BookModel[]>([]);
@@ -15,7 +16,10 @@ export const ListBook: React.FC = () => {
         setLoadingData(false);
       }
     ).catch(
-
+      error => {
+        setLoadingData(false);
+        setError(error.message || 'Lỗi khi tải dữ liệu sách');
+      }
     );
   }, [])
 
