@@ -1,7 +1,11 @@
 package com.phamtra.bookstore_backend.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
 @Table(name = "hinh_anh")
@@ -31,6 +35,7 @@ public class HinhAnh {
 
     @ManyToOne
     @JoinColumn(name = "ma_sach", nullable = false)
+    @JsonIgnore
     private Sach sach;
 
 }

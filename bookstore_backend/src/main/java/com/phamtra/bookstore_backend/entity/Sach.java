@@ -69,6 +69,8 @@ public class Sach {
     @JsonIgnore
     List<SachYeuThich> danhSachSachYeuThich;
 
+    @OneToMany(mappedBy = "sach", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<HinhAnh> hinhAnhs;
+
 
 }
-
