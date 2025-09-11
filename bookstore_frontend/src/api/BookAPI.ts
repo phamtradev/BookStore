@@ -1,10 +1,10 @@
+
 import type BookModel from '../models/BookModel';
 import my_request from './Request';
 
-
-export async function getAllBook(): Promise<BookModel[]> {
+export async function getBook(endpoints: string): Promise<BookModel[]> {
   const result: BookModel[] = [];
-  const endpoints: string = 'http://localhost:8080/api/v1/sachs';
+
   const respone = await my_request(endpoints);
   if (!respone.data || !Array.isArray(respone.data)) {
     console.error('API trả về:', respone);
@@ -26,3 +26,27 @@ export async function getAllBook(): Promise<BookModel[]> {
   }
   return result;
 }
+
+
+export async function getAllBook(): Promise<BookModel[]> {
+  const endpoints: string = 'http://localhost:8080/api/v1/sachs?sort=maSach,desc';
+  return getBook(endpoints);
+}
+
+export async function getNewBook(): Promise<BookModel[]> {
+  const endpoints: string = 'http://localhost:8080/api/v1/sachs?sort=maSach,desc&current=1&pageSize=3';
+  return getBook(endpoints);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
