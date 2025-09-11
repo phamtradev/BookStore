@@ -11,8 +11,8 @@ export const Carousel: React.FC = () => {
 
   useEffect(() => {
     getNewBook().then(
-      bookData => {
-        setListBook(bookData);
+      (bookData) => {
+        setListBook(bookData.data);
         setLoadingData(false);
       }
     ).catch(
@@ -45,15 +45,15 @@ export const Carousel: React.FC = () => {
     <div>
       <div id="carouselExampleDark" className="carousel carousel-dark slide">
         <div className="carousel-inner">
-          <div className="carousel-item active" data-bs-interval="10000">
-            <CarouselItem key={0} book={ListBook[0]} />
-          </div>
-          <div className="carousel-item" data-bs-interval="10000">
-            <CarouselItem key={1} book={ListBook[1]} />
-          </div>
-          <div className="carousel-item" data-bs-interval="10000">
-            <CarouselItem key={2} book={ListBook[2]} />
-          </div>
+          {ListBook.map((book, idx) => (
+            <div
+              className={`carousel-item${idx === 0 ? ' active' : ''}`}
+              data-bs-interval="10000"
+              key={book.maSach}
+            >
+              <CarouselItem book={book} />
+            </div>
+          ))}
         </div>
         <button className="carousel-control-prev" type="button" data-bs-target="#carouselExampleDark" data-bs-slide="prev">
           <span className="carousel-control-prev-icon" aria-hidden="true"></span>
