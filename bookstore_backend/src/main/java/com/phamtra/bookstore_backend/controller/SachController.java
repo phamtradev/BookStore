@@ -23,8 +23,8 @@ public class SachController {
     public ResponseEntity<?> getAllSach(
             @RequestParam("current") Optional<String> currentOptional,
             @RequestParam("pageSize") Optional<String> pagesizeOptional) {
-        String sCurrent = currentOptional.isPresent() ? currentOptional.get() : "";
-        String sPageSize = pagesizeOptional.isPresent() ? pagesizeOptional.get() : "";
+        String sCurrent = currentOptional.isPresent() ? currentOptional.get() : "1";
+        String sPageSize = pagesizeOptional.isPresent() ? pagesizeOptional.get() : "10";
         int current = Integer.parseInt(sCurrent) - 1;
         int pageSize = Integer.parseInt(sPageSize);
         Pageable pageable = PageRequest.of(current, pageSize);
