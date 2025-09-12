@@ -1,9 +1,14 @@
 import React, { useEffect, useState } from 'react'
 import type BookModel from '../../models/BookModel';
 import { BookProps } from './components/BookProps';
-import { getBook } from '../../api/BookAPI';
+import { getBook, searchBookByName } from '../../api/BookAPI';
 import { Pagination } from '../utils/Pagination';
-export const ListBook: React.FC = () => {
+
+interface ListBookProps {
+  nameSearch: string;
+}
+
+export const ListBook: React.FC<ListBookProps> = ({ nameSearch }: ListBookProps) => {
 
   const [ListBook, setListBook] = useState<BookModel[]>([]);
   const [loadingData, setLoadingData] = useState<boolean>(true);
@@ -13,27 +18,42 @@ export const ListBook: React.FC = () => {
   const pageSize = 8;
 
   useEffect(() => {
-    const fetchBooks = async () => {
-      setLoadingData(true);
-      try {
-        const endpoints = `http://localhost:8080/api/v1/sachs?sort=maSach,desc&current=${currentPage}&pageSize=${pageSize}`;
-        const bookData = await getBook(endpoints);
-        setListBook(bookData.data || []);
-        // Nếu API không trả về totalPage, tự tính dựa vào totalItem
-        if (bookData.totalPage) {
-          setTotalPages(bookData.totalPage);
-        } else if (bookData.totalItem) {
-          setTotalPages(Math.ceil(bookData.totalItem / pageSize));
-        } else {
-          setTotalPages(1);
+    if (nameSearch === '') {
+      const fetchBooks = async () => {
+        setLoadingData(true);
+        try {
+          const endpoints = `http://localhost:8080/api/v1/sachs?sort=maSach,desc&current=${currentPage}&pageSize=${pageSize}`;
+          const bookData = await getBook(endpoints);
+          setListBook(bookData.data || []);
+          // nếu API không trả về totalPage, tự tính dựa vào totalItem
+          if (bookData.totalPage) {
+            setTotalPages(bookData.totalPage);
+          } else if (bookData.totalItem) {
+            setTotalPages(Math.ceil(bookData.totalItem / pageSize));
+          } else {
+            setTotalPages(1);
+          }
+        } catch (error: any) {
+          setError(error.message || 'Lỗi khi tải dữ liệu sách');
         }
-      } catch (error: any) {
-        setError(error.message || 'Lỗi khi tải dữ liệu sách');
-      }
-      setLoadingData(false);
-    };
-    fetchBooks();
-  }, [currentPage]);
+        setLoadingData(false);
+      };
+      fetchBooks();
+    } else {
+      const fetchSearchResults = async () => {
+        setLoadingData(true);
+        try {
+          const bookData = await searchBookByName(nameSearch, currentPage, pageSize);
+          setListBook(bookData.data || []);
+          setTotalPages(bookData.totalPage || Math.ceil(bookData.totalItem / pageSize) || 1);
+        } catch (error: any) {
+          setError(error.message || 'Lỗi khi tải dữ liệu sách');
+        }
+        setLoadingData(false);
+      };
+      fetchSearchResults();
+    }
+  }, [currentPage, nameSearch]);
 
   const handlePaginate = (page: number) => {
     setCurrentPage(page);

@@ -3,12 +3,16 @@ import { Banner } from './components/Banner'
 import { Carousel } from './components/Carousel'
 import { ListBook } from '../product/ListBook'
 
-export const HomePage = () => {
+interface HomePageProps {
+  nameSearch: string;
+}
+
+export const HomePage = ({ nameSearch }: HomePageProps) => {
   return (
     <div>
       <Banner />
       <Carousel />
-      <ListBook />
+      <ListBook nameSearch={nameSearch} />
     </div>
   )
 }

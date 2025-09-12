@@ -1,6 +1,24 @@
 import React from 'react'
 
-export const Navbar = () => {
+
+interface NavbarProps {
+  nameSearch: string;
+  setNameSearch: (nameSearch: string) => void;
+}
+
+
+export const Navbar = ({ nameSearch, setNameSearch }: NavbarProps) => {
+  const [inputValue, setInputValue] = React.useState(nameSearch);
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setInputValue(e.target.value);
+  };
+
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    setNameSearch(inputValue);
+  };
+
   return (
     <div>
       <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
@@ -58,12 +76,14 @@ export const Navbar = () => {
                 </ul>
               </li>
             </ul>
-            <form className="d-flex" role="search">
+            <form className="d-flex" role="search" onSubmit={handleSearch}>
               <input
                 className="form-control me-2"
                 type="search"
                 placeholder="Search"
                 aria-label="Search"
+                onChange={handleInputChange}
+                value={inputValue}
               />
               <button className="btn btn-outline-success" type="submit">Search</button>
             </form>

@@ -63,6 +63,16 @@ export async function getNewBook(): Promise<ApiResponse> {
   return getBook(endpoints);
 }
 
+export async function searchBookByName(nameSearch: string, current: number = 1, pageSize: number = 10): Promise<ApiResponse> {
+  if (!nameSearch || nameSearch.trim() === '') {
+    return getAllBook();
+  }
+
+  const searchTerm = encodeURIComponent(nameSearch.trim());
+  const endpoints = `http://localhost:8080/api/v1/sachs/search?tenSach=${searchTerm}&current=${current}&pageSize=${pageSize}`;
+  return getBook(endpoints);
+}
+
 
 
 
