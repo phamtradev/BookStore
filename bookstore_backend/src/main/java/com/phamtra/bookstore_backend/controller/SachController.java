@@ -45,4 +45,25 @@ public class SachController {
         Optional<Sach> sachOptional = this.sachService.getSachById(id);
         return ResponseEntity.ok().body(sachOptional.get());
     }
+
+    @GetMapping("/sachs/search")
+    public ResponseEntity<?> searchSachByTenSach(
+            @RequestParam("tenSach") String tenSach,
+            @RequestParam("current") Optional<String> currentOptional,
+            @RequestParam("pageSize") Optional<String> pageSizeOptional) {
+        String sCurrent = currentOptional.orElse("1");
+        String sPageSize = pageSizeOptional.orElse("10");
+        int current = 1;
+        int pageSize = 10;
+        try {
+            current = Integer.parseInt(sCurrent);
+            pageSize = Integer.parseInt(sPageSize);
+        } catch (NumberFormatException e) {
+            current = 1;
+            pageSize = 10;
+        }
+        Pageable pageable = PageRequest.of(current - 1, pageSize);
+        Page<Sach> page = sachService.searchSachByTenSach(tenSach, pageable);
+        return ResponseEntity.ok(page);
+    }
 }

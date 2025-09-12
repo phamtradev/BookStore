@@ -25,4 +25,7 @@ public class SachService {
         return this.sachRepository.findById(id);
     }
 
+    public Page<Sach> searchSachByTenSach(String tenSach, Pageable pageable) {
+        return this.sachRepository.findByTenSachContainingIgnoreCase(tenSach, pageable);
+    }
 }
