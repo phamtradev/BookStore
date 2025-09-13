@@ -3,18 +3,28 @@ import BookModel from '../../models/BookModel';
 import { BookProps } from './components/BookProps';
 import { Pagination } from '../utils/Pagination';
 
-// Cấu trúc API Book dựa trên phản hồi API
 interface ApiBook {
   maSach: number;
-  tenSach?: string;
-  giaBan?: number;
-  giaNiemYet?: number;
-  moTa?: string;
-  soLuong?: number;
-  tenTacGia?: string;
-  trungBinhXepHang?: number;
-  hinhAnhs?: any[];
-  isbn?: string;
+  tenSach: string;
+  giaBan: number;
+  giaNiemYet: number;
+  moTa: string;
+  soLuong: number;
+  tenTacGia: string;
+  trungBinhXepHang: number;
+  hinhAnhs: any[];
+}
+
+interface CategoryResponse {
+  maTheLoai: number;
+  tenTheLoai: string;
+  danhSachQuyenSach: ApiBook[];
+}
+
+interface BooksResponse {
+  data: ApiBook[];
+  totalPages: number;
+  totalItem: number;
 }
 
 interface ListBookProps {
@@ -29,21 +39,6 @@ export const ListBook: React.FC<ListBookProps> = ({ nameSearch, maTheLoai }) => 
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const pageSize = 8;
-
-  // Debug function
-  const logBookData = (book: any) => {
-    console.log('Book data:', {
-      maSach: book.maSach,
-      tenSach: book.tenSach,
-      giaBan: book.giaBan,
-      giaNiemYet: book.giaNiemYet,
-      moTa: book.moTa,
-      soLuong: book.soLuong,
-      tenTacGia: book.tenTacGia,
-      trungBinhXepHang: book.trungBinhXepHang,
-      hinhAnhs: book.hinhAnhs
-    });
-  };
 
   useEffect(() => {
     const fetchBooks = async () => {
@@ -66,78 +61,15 @@ export const ListBook: React.FC<ListBookProps> = ({ nameSearch, maTheLoai }) => 
         if (!response.ok) {
           throw new Error('Không thể kết nối tới máy chủ');
         }
-        const responseData = await response.json();
-        console.log('API Response:', responseData);
+        const data = await response.json();
+        console.log('API Response:', data);
 
         if (maTheLoai > 0 && !nameSearch) {
-          // Xử lý dữ liệu từ API thể loại theo cấu trúc mới
-          console.log('Full category response:', responseData);
-
-          // Phân tích cấu trúc theo API response: data[0].danhSachQuyenSach[0]
-          if (responseData && responseData.data && responseData.data.length > 0) {
-            const categoryItem = responseData.data[0];
-            console.log('Category item:', categoryItem);
-
-            if (categoryItem.danhSachQuyenSach && categoryItem.danhSachQuyenSach.length > 0) {
-              console.log('Book list available, length:', categoryItem.danhSachQuyenSach.length);
-
-              // Lấy danh sách sách từ danhSachQuyenSach
-              const bookItems = categoryItem.danhSachQuyenSach;
-
-              // Debug - in ra sách đầu tiên để kiểm tra cấu trúc
-              if (bookItems.length > 0) {
-                console.log('First book:', bookItems[0]);
-              }
-
-              // Chuyển đổi thành BookModel
-              const formattedBooks = bookItems.map((bookItem: any) => {
-                // Debug thông tin của mỗi cuốn sách
-                console.log('Processing book item:', bookItem);
-                console.log('Book properties:', {
-                  maSach: bookItem.maSach,
-                  tenSach: bookItem.tenSach,
-                  giaBan: bookItem.giaBan,
-                  giaNiemYet: bookItem.giaNiemYet,
-                  hinhAnhs: bookItem.hinhAnhs
-                });
-
-                // Lấy dữ liệu từ cấu trúc của book item
-                return new BookModel(
-                  bookItem.maSach || 0,
-                  bookItem.tenSach || '',
-                  bookItem.giaBan || 0,
-                  bookItem.giaNiemYet || 0,
-                  bookItem.moTa || '',
-                  bookItem.soLuong || 0,
-                  bookItem.tenTacGia || '',
-                  bookItem.trungBinhXepHang || 0,
-                  bookItem.hinhAnhs || []
-                );
-              });
-
-              console.log('Formatted books:', formattedBooks);
-
-              // Phân trang
-              const start = (currentPage - 1) * pageSize;
-              const end = start + pageSize;
-              const booksToShow = formattedBooks.slice(start, end);
-              console.log('Sách hiển thị trang hiện tại:', booksToShow);
-
-              setBooks(booksToShow);
-              setTotalPages(Math.ceil(bookItems.length / pageSize));
-            } else {
-              console.log('No books found in danhSachQuyenSach array');
-              setBooks([]);
-            }
-          } else {
-            console.log('Invalid response structure or no data');
-            setBooks([]);
-          }
-        } else {
-          // Xử lý dữ liệu từ API sách
-          const booksList = responseData.data || [];
-          console.log('Danh sách sách từ API chung:', booksList);
-
+          // Xử lý dữ liệu từ API thể loại
+          const categoryData = data as CategoryResponse;
+          const booksList = categoryData.danhSachQuyenSach || [];
+          console.log('Danh sách sách từ thể loại:', booksList);
+          
           // Chuyển đổi dữ liệu sang đúng format BookModel
           const formattedBooks = booksList.map((book: ApiBook) => new BookModel(
             book.maSach,
@@ -150,10 +82,36 @@ export const ListBook: React.FC<ListBookProps> = ({ nameSearch, maTheLoai }) => 
             book.trungBinhXepHang,
             book.hinhAnhs
           ));
-
-          console.log('Formatted books:', formattedBooks);
+          
+          // Phân trang
+          const start = (currentPage - 1) * pageSize;
+          const end = start + pageSize;
+          const booksToShow = formattedBooks.slice(start, end);
+          console.log('Sách hiển thị trang hiện tại:', booksToShow);
+          
+          setBooks(booksToShow);
+          setTotalPages(Math.ceil(booksList.length / pageSize));
+        } else {
+          // Xử lý dữ liệu từ API sách
+          const booksData = data as BooksResponse;
+          const booksList = booksData.data || [];
+          console.log('Danh sách sách từ API chung:', booksList);
+          
+          // Chuyển đổi dữ liệu sang đúng format BookModel
+          const formattedBooks = booksList.map((book: ApiBook) => new BookModel(
+            book.maSach,
+            book.tenSach,
+            book.giaBan,
+            book.giaNiemYet,
+            book.moTa,
+            book.soLuong,
+            book.tenTacGia,
+            book.trungBinhXepHang,
+            book.hinhAnhs
+          ));
+          
           setBooks(formattedBooks);
-          setTotalPages(responseData.totalPages || Math.ceil((responseData.totalItem || 0) / pageSize));
+          setTotalPages(booksData.totalPages || Math.ceil((booksData.totalItem || 0) / pageSize));
         }
       } catch (error: any) {
         console.error('Error fetching books:', error);
