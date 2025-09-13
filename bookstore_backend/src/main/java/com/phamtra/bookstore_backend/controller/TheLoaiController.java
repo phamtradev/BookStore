@@ -24,5 +24,10 @@ public class TheLoaiController {
         List<TheLoai> result = theLoaiService.findDanhSachTheLoaiByMaTheLoai(id);
         return ResponseEntity.ok(result);
     }
-}
 
+    @GetMapping("/all")
+    public ResponseEntity<?> getAllTheLoai() {
+        List<TheLoai> result = theLoaiService.getAllTheLoai();
+        return ResponseEntity.ok(result);
+    }
+}

@@ -17,5 +17,8 @@ public class TheLoaiService {
     public List<TheLoai> findDanhSachTheLoaiByMaTheLoai(Long maTheLoai) {
         return theLoaiRepository.findByMaTheLoai(maTheLoai);
     }
-}
 
+    public List<TheLoai> getAllTheLoai() {
+        return theLoaiRepository.findAll();
+    }
+}
