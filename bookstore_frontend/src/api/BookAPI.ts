@@ -1,5 +1,5 @@
 
-import type BookModel from '../models/BookModel';
+import BookModel from '../models/BookModel';
 import my_request from './Request';
 
 interface ApiResponse {
@@ -73,15 +73,43 @@ export async function searchBookByName(nameSearch: string, current: number = 1, 
   return getBook(endpoints);
 }
 
+export async function getBookById(maSach: number | string): Promise<BookModel | null> {
+  try {
+    console.log("BookAPI.getBookById - Đang gọi API cho sách ID:", maSach, "- Kiểu dữ liệu:", typeof maSach);
+    const endpoints = `http://localhost:8080/api/v1/sachs/${maSach}`;
+    console.log("Endpoint gọi API:", endpoints);
 
+    const response = await my_request(endpoints);
+    console.log("Nhận được response từ API:", response);
 
+    // Kiểm tra cấu trúc dữ liệu trả về
+    if (response && response.statusCode === 200 && response.data) {
+      const bookData = response.data;
+      console.log("Dữ liệu sách từ API:", bookData);
 
+      // Chuyển đổi dữ liệu API thành BookModel
+      const book = new BookModel(
+        bookData.maSach || 0,
+        bookData.tenSach || '',
+        bookData.giaBan || 0,
+        bookData.giaNiemYet || 0,
+        bookData.moTa || '',
+        bookData.soLuong || 0,
+        bookData.tenTacGia || '',
+        bookData.trungBinhXepHang || 0,
+        bookData.hinhAnhs || []
+      );
 
+      console.log("BookModel được tạo:", book);
+      return book;
+    }
 
-
-
-
-
-
-
+    console.log("Không tìm thấy dữ liệu sách hợp lệ từ API");
+    // Trả về null nếu không có dữ liệu hợp lệ
+    return null;
+  } catch (error) {
+    console.error(`Lỗi khi lấy thông tin sách với ID ${maSach}:`, error);
+    throw error;
+  }
+}
 

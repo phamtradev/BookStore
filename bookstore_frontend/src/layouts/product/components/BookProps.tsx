@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import type BookModel from '../../../models/BookModel'
+import { Link } from 'react-router-dom';
 
 
 interface BookProps {
@@ -25,29 +26,36 @@ export const BookProps: React.FC<BookProps> = (props) => {
   // Sử dụng ảnh mẫu nếu không có ảnh
   const placeholderImg = '/src/books/Sach1.webp';
 
+  // Debug thông tin mã sách
+  console.log('BookProps - Link đến mã sách:', props.book.maSach, '- Kiểu dữ liệu:', typeof props.book.maSach);
+
   return (
     <div className='card'>
-      {photo && (photo.duLieuAnh || photo.duongDan) ? (
-        <img
-          src={photo.duLieuAnh || photo.duongDan}
-          className='card-img-top'
-          alt={props.book.tenSach}
-          style={{ height: '200px', objectFit: 'cover' }}
-          onError={(e) => {
-            console.log('Image error, using placeholder');
-            (e.target as HTMLImageElement).src = placeholderImg;
-          }}
-        />
-      ) : (
-        <img
-          src={placeholderImg}
-          className='card-img-top'
-          alt="Placeholder"
-          style={{ height: '200px', objectFit: 'cover' }}
-        />
-      )}
+      <Link to={`/sach/${props.book.maSach}`} onClick={() => console.log('Đã click vào link sách với ID:', props.book.maSach)}>
+        {photo && (photo.duLieuAnh || photo.duongDan) ? (
+          <img
+            src={photo.duLieuAnh || photo.duongDan}
+            className='card-img-top'
+            alt={props.book.tenSach}
+            style={{ height: '200px', objectFit: 'cover' }}
+            onError={(e) => {
+              console.log('Image error, using placeholder');
+              (e.target as HTMLImageElement).src = placeholderImg;
+            }}
+          />
+        ) : (
+          <img
+            src={placeholderImg}
+            className='card-img-top'
+            alt="Placeholder"
+            style={{ height: '200px', objectFit: 'cover' }}
+          />
+        )}
+      </Link>
       <div className='card-body'>
-        <h5 className='card-title'>{props.book.tenSach}</h5>
+        <Link to={`/sach/${props.book.maSach}`} style={{ textDecoration: 'none', color: 'inherit' }} onClick={() => console.log('Đã click vào tiêu đề sách với ID:', props.book.maSach)}>
+          <h5 className='card-title'>{props.book.tenSach}</h5>
+        </Link>
         <p className='card-text'>{props.book.moTa}</p>
         <div className='price'>
           <span className='original-price'>
