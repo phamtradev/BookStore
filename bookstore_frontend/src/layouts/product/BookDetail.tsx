@@ -10,11 +10,13 @@ export const BookDetail = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [quantity, setQuantity] = useState<number>(1);
+  const [totalPrice, setTotalPrice] = useState<number>(0);
+  const [totalOriginalPrice, setTotalOriginalPrice] = useState<number>(0);
   const [activeTab, setActiveTab] = useState<string>('moTa');
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const placeholderImg = '/src/books/Sach1.webp';
 
-  // Thêm các dependencies thiếu cho useEffect để đảm bảo nó chạy lại khi cần
+  // useEffect cho việc tải chi tiết sách khi ID thay đổi
   useEffect(() => {
     console.log("BookDetail - bookId từ params:", bookId);
     loadBookDetails();
@@ -24,6 +26,16 @@ export const BookDetail = () => {
     setActiveTab('moTa');
     setSelectedImage(null);
   }, [bookId]);
+
+  // useEffect để cập nhật tổng giá khi số lượng thay đổi
+  useEffect(() => {
+    if (book && book.giaBan) {
+      setTotalPrice(book.giaBan * quantity);
+    }
+    if (book && book.giaNiemYet) {
+      setTotalOriginalPrice(book.giaNiemYet * quantity);
+    }
+  }, [book, quantity]);
 
   const loadBookDetails = async () => {
     setLoading(true);
@@ -47,6 +59,14 @@ export const BookDetail = () => {
         if (bookData.hinhAnhs && bookData.hinhAnhs.length > 0) {
           setSelectedImage(bookData.hinhAnhs[0].duLieuAnh || bookData.hinhAnhs[0].duongDan || null);
         }
+
+        // Khởi tạo giá ban đầu
+        if (bookData.giaBan) {
+          setTotalPrice(bookData.giaBan);
+        }
+        if (bookData.giaNiemYet) {
+          setTotalOriginalPrice(bookData.giaNiemYet);
+        }
       } else {
         throw new Error('Không tìm thấy thông tin sách');
       }
@@ -56,7 +76,9 @@ export const BookDetail = () => {
     } finally {
       setLoading(false);
     }
-  }; const handleIncrement = () => {
+  };
+
+  const handleIncrement = () => {
     if (book && quantity < (book.soLuong || 10)) {
       setQuantity(quantity + 1);
     }
@@ -68,10 +90,23 @@ export const BookDetail = () => {
     }
   };
 
+  // Hàm tính giảm giá phần trăm
+  const calculateDiscountPercentage = (): number => {
+    if (book && book.giaNiemYet && book.giaBan && book.giaNiemYet > book.giaBan) {
+      return Math.round(((book.giaNiemYet - book.giaBan) / book.giaNiemYet) * 100);
+    }
+    return 0;
+  };
+
+  // Hàm tính số tiền tiết kiệm được
+  const calculateSavings = (): number => {
+    return totalOriginalPrice - totalPrice;
+  };
+
   const handleAddToCart = () => {
     if (book) {
       // Xử lý thêm vào giỏ hàng ở đây
-      alert(`Đã thêm ${quantity} sản phẩm "${book.tenSach}" vào giỏ hàng`);
+      alert(`Đã thêm ${quantity} sản phẩm "${book.tenSach}" vào giỏ hàng với giá ${totalPrice.toLocaleString('vi-VN')} ₫`);
     }
   };
 
@@ -177,22 +212,33 @@ export const BookDetail = () => {
                   <div className="me-3">
                     <span className="text-muted me-2">Giá niêm yết:</span>
                     <span className="text-decoration-line-through fs-5 text-muted">
-                      {book.giaNiemYet?.toLocaleString('vi-VN')} ₫
+                      {totalOriginalPrice.toLocaleString('vi-VN')} ₫
                     </span>
                   </div>
 
                   {book.giaNiemYet && book.giaBan && book.giaNiemYet > book.giaBan && (
                     <span className="badge bg-danger">
-                      -{Math.round(((book.giaNiemYet - book.giaBan) / book.giaNiemYet) * 100)}%
+                      -{calculateDiscountPercentage()}%
                     </span>
                   )}
                 </div>
 
-                <div className="mt-2">
-                  <span className="text-muted me-2">Giá bán:</span>
-                  <span className="fs-3 fw-bold text-danger">
-                    {book.giaBan?.toLocaleString('vi-VN')} ₫
-                  </span>
+                <div className="mt-2 d-flex align-items-center">
+                  <div>
+                    <span className="text-muted me-2">Giá bán:</span>
+                    <span className="fs-3 fw-bold text-danger">
+                      {totalPrice.toLocaleString('vi-VN')} ₫
+                    </span>
+                  </div>
+
+                  {calculateSavings() > 0 && (
+                    <div className="ms-3 bg-light p-2 rounded">
+                      <span className="text-success">
+                        <i className="fas fa-tags me-1"></i>
+                        Tiết kiệm: {calculateSavings().toLocaleString('vi-VN')} ₫
+                      </span>
+                    </div>
+                  )}
                 </div>
               </div>
 
@@ -238,6 +284,21 @@ export const BookDetail = () => {
                       <i className="fas fa-plus"></i>
                     </button>
                   </div>
+                </div>
+
+                {/* Hiển thị tổng giá theo số lượng */}
+                <div className="total-price-info">
+                  <div className="d-flex justify-content-between align-items-center">
+                    <span className="fw-bold">Tổng tiền:</span>
+                    <span className="fs-4 fw-bold text-danger">{totalPrice.toLocaleString('vi-VN')} ₫</span>
+                  </div>
+                  {calculateSavings() > 0 && (
+                    <div className="text-end mt-1">
+                      <small className="text-success">
+                        (Tiết kiệm {calculateSavings().toLocaleString('vi-VN')} ₫)
+                      </small>
+                    </div>
+                  )}
                 </div>
               </div>
 
