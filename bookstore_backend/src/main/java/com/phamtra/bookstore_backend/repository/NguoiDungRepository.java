@@ -6,4 +6,8 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface NguoiDungRepository extends JpaRepository<NguoiDung, Long> {
+
+    boolean existsByEmail(String email);
+
+    boolean existsByTenDangNhap(String tenDangNhap);
 }

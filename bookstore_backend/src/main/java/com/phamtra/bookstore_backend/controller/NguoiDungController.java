@@ -4,6 +4,7 @@ import com.phamtra.bookstore_backend.entity.NguoiDung;
 import com.phamtra.bookstore_backend.exception.IdInvalidException;
 import com.phamtra.bookstore_backend.service.NguoiDungService;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -13,13 +14,26 @@ import java.util.List;
 public class NguoiDungController {
 
     private final NguoiDungService nguoiDungService;
+    private final PasswordEncoder passwordEncoder;
 
-    public NguoiDungController(NguoiDungService nguoiDungService) {
+    public NguoiDungController(NguoiDungService nguoiDungService, PasswordEncoder passwordEncoder) {
         this.nguoiDungService = nguoiDungService;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @PostMapping("/users")
-    public ResponseEntity<?> taoNguoiDung (@RequestBody NguoiDung nguoiDung) {
+    public ResponseEntity<?> taoNguoiDung(@RequestBody NguoiDung nguoiDung) throws IdInvalidException {
+        boolean isEmailExist = this.nguoiDungService.isEmailExist(nguoiDung.getEmail());
+        boolean isTenDangNhapExist = this.nguoiDungService.isTenDangNhapExist(nguoiDung.getTenDangNhap());
+        if (isEmailExist) {
+            throw new IdInvalidException(
+                    "Email " + nguoiDung.getEmail() + " đã tồn tại, vui lòng sử dụng email khác");
+        } else if (isTenDangNhapExist) {
+            throw new IdInvalidException(
+                    "Tai khoan " + nguoiDung.getTenDangNhap() + " đã tồn tại, vui lòng sử dụng ten tai khoan khác");
+        }
+        String hashPassword = this.passwordEncoder.encode(nguoiDung.getMatKhau());
+        nguoiDung.setMatKhau(hashPassword);
         NguoiDung nguoiDungMoi = this.nguoiDungService.taoNguoiDung(nguoiDung);
         return ResponseEntity.ok().body(nguoiDungMoi);
     }

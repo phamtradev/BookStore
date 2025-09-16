@@ -2,7 +2,6 @@ package com.phamtra.bookstore_backend.service;
 
 import com.phamtra.bookstore_backend.entity.NguoiDung;
 import com.phamtra.bookstore_backend.repository.NguoiDungRepository;
-import org.apache.catalina.User;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -53,4 +52,13 @@ public class NguoiDungService {
         }
         return nguoiDungHienTai;
     }
+
+    public boolean isEmailExist(String email) {
+        return this.nguoiDungRepository.existsByEmail(email);
+    }
+
+    public boolean isTenDangNhapExist(String email) {
+        return this.nguoiDungRepository.existsByTenDangNhap(email);
+    }
+
 }
