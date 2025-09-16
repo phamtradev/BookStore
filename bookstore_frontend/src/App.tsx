@@ -4,9 +4,8 @@ import { Navbar } from './layouts/header/Navbar'
 import { useState } from 'react'
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { About } from './layouts/about/About';
-import { CategoryDetail } from './layouts/category/CategoryDetail';
-import { useParams } from 'react-router-dom';
 import { BookDetail } from './layouts/product/BookDetail';
+import { Register } from './layouts/user/Register';
 
 function App() {
 
@@ -21,6 +20,7 @@ function App() {
           <Route path='/category/:id' element={<HomePage nameSearch={nameSearch} />} />
           <Route path='/about' element={<About />} />
           <Route path='/sach/:bookId' element={<BookDetail />} />
+          <Route path='/register' element={<Register />} />
         </Routes>
         <Footer />
       </BrowserRouter>
