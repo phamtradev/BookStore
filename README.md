@@ -1,1 +1,1 @@
-BookStore web
+BookStore webapp
